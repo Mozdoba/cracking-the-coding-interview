@@ -89,15 +89,21 @@ public class ArraysAndStrings {
     /** 
      * 
      */
-    public String urlify(char[] url) {
-        char whitespace = ' ';
-        char[] urlWhitespace = {'%', '2', '0'};
+    public void urlify(char[] url) {
+        for (int i = 0; i < url.length; i++) {
+            if (url[i] == ' ') {
+                for (int j = url.length - 1; j > i; j--) {
+                    url[j] = url[j-2];
+                }
+                url[i++] = '%';
+                url[i++] = '2';
+                url[i++] = '0';
+            }
+        }
     }
 
-    // TIME COMPLEXITY?
-    // SPACE COMPLEXITY?
-
-
+    // TIME COMPLEXITY? O(N)
+    // SPACE COMPLEXITY? O(1)
 
     public static void main(String[] args) {
         System.out.println();
@@ -120,5 +126,29 @@ public class ArraysAndStrings {
         String stringA_1_2 = "race car";
         String stringB_1_2 = "race car";
         System.out.println(arraysAndStrings.isPermutation(stringA_1_2, stringB_1_2) + ": '" + stringA_1_2 + "' '" + stringB_1_2 + "'");
+
+        System.out.println();
+        System.out.println();
+
+        /**
+         * Write a method to replace all spaces in a string with '%20'. You may assume that the string has
+         * sufficient space at the end to hold the additional characters, and that you are given the 'true'
+         * length of the string. (Note: if implementing in Java, please use a character array so that you) 
+         * can perform this operation in place)  
+         */
+        System.out.println("1.3: Write a method to replace all spaces in a string with '%20'. You may assume that the string has \n" +
+                            "sufficient space at the end to hold the additional characters, and that you are given the 'true' \n" +
+                            "length of the string. (Note: if implementing in Java, please use a character array so that you) \n" +
+                            "can perform this operation in place).");
+        String urlString = "www.Does this work?.com    ";
+        char[] urlCharArray = urlString.toCharArray();
+        arraysAndStrings.urlify(urlCharArray);
+
+        for(int i = 0; i < urlCharArray.length; i++) {
+            System.out.print(urlCharArray[i]);
+        }
+
+        System.out.println();
+        System.out.println();
     }
 }
