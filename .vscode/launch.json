@@ -2,21 +2,31 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "java",
+            "name": "CodeLens (Launch) - ArraysAndStrings",
+            "request": "launch",
+            "mainClass": "ArraysAndStrings",
+            "projectName": "ctci_c96871ad"
+        },
+        {
             "name": "Debug Java",
             "type": "java",
             "request": "launch",
-            "externalConsole": true,                //user input dosen't work if set it to false :(
+            "externalConsole": true,
             "stopOnEntry": true,
-            "preLaunchTask": "build",                 // Runs the task created above before running this configuration
-            "jdkPath": "${env:JAVA_HOME}/bin",        // You need to set JAVA_HOME enviroment variable
+            "preLaunchTask": "build",
+            "jdkPath": "${env:JAVA_HOME}/bin",
             "cwd": "${workspaceRoot}",
             "startupClass": "${workspaceRoot}${file}",
-            "sourcePath": ["${workspaceRoot}"],   // Indicates where your source (.java) files are
-            "classpath": ["${workspaceRoot}"],    // Indicates the location of your .class files
-            "options": [],                             // Additional options to pass to the java executable
-            "args": []                                // Command line arguments to pass to the startup class
+            "sourcePath": [
+                "${workspaceRoot}"
+            ],
+            "classpath": [
+                "${workspaceRoot}"
+            ],
+            "options": [],
+            "args": []
         }
-
     ],
     "compounds": []
 }

@@ -3,16 +3,16 @@ import java.util.Hashtable;
 import java.util.*;
 
 public class ArraysAndStrings {
- 
+
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                        1.1 Is UNIQUE                                                 //
     //             Implement an algorithm to determine if a string has all unique characters.               //
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    
-    /** 
+
+    /**
      *  IS THE STRING IN ASCII OR UNICODE?
-     * 
+     *
      */
     public boolean isUnique(String s) {
         Hashtable<Character, Boolean> hashTable = new Hashtable<>();
@@ -31,7 +31,7 @@ public class ArraysAndStrings {
 
     public boolean isUniqueSolution(String str) {
         //128 characters in ASCII, if there are more than 128 characters in a string, 1 must be a duplicate
-        if (str.length() > 128) return false; 
+        if (str.length() > 128) return false;
 
         boolean[] charSet = new boolean[128];
         for (int i = 0; i < str.length(); i++) {
@@ -53,7 +53,7 @@ public class ArraysAndStrings {
     //   Given two strings, write an algorithm to determine if one string is a permutation of the other.    //
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /** 
+    /**
      * 1. ARE THE STRINGS ASCII (128 CHARS) OR UNICODE (U+10FFFF CHARS)? ASCII
      * 2. DO WHITE SPACES COUNT AS A CHARACTER? YES
      */
@@ -86,8 +86,8 @@ public class ArraysAndStrings {
     //   can perform this operation in place)                                                               //
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /** 
-     * 
+    /**
+     *
      */
     public void urlify(char[] url) {
         for (int i = 0; i < url.length; i++) {
@@ -100,6 +100,36 @@ public class ArraysAndStrings {
                 url[i++] = '0';
             }
         }
+    }
+
+    // TIME COMPLEXITY? O(N)
+    // SPACE COMPLEXITY? O(1)
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                  1.4 PALINDROME PERMUTATION                                          //
+    //  Given a string, write a function to check if it is a permutation of a palindrome. A palindrome is   //
+    //  a word or phrase that is the same forwards and backwards. A permutation is a rearrangement of       //
+    //  letters. The palindrome does not need to be limited to just dictionary words.                       //
+    //  Input: 'TACT COA'     Output: 'TACO CAT', 'ATCO CTA', etc.                                          //
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * 1. ASCII Characters or unicode Characters?
+     * 2. Are uppercase letters & their lowercase counterparts considered the same?
+     * 3. Do spaces count as a character?
+     */
+    public boolean isPalindromePermutation(String str) {
+        HashSet<Character> charSet = new HashSet<>();
+        for (int i = 0; i < str.length(); i++) {
+            char letter = str.charAt(i);
+            if (letter == ' ') continue; //If spaces don't count as a character
+            if (!charSet.contains(letter)) {
+                charSet.add(Character.valueOf(letter));
+            } else {
+                charSet.remove(Character.valueOf(letter));
+            }
+        }
+        return (charSet.isEmpty() || charSet.size() == 1);
     }
 
     // TIME COMPLEXITY? O(N)
@@ -133,8 +163,8 @@ public class ArraysAndStrings {
         /**
          * Write a method to replace all spaces in a string with '%20'. You may assume that the string has
          * sufficient space at the end to hold the additional characters, and that you are given the 'true'
-         * length of the string. (Note: if implementing in Java, please use a character array so that you) 
-         * can perform this operation in place)  
+         * length of the string. (Note: if implementing in Java, please use a character array so that you)
+         * can perform this operation in place)
          */
         System.out.println("1.3: Write a method to replace all spaces in a string with '%20'. You may assume that the string has \n" +
                             "sufficient space at the end to hold the additional characters, and that you are given the 'true' \n" +
@@ -147,6 +177,22 @@ public class ArraysAndStrings {
         for(int i = 0; i < urlCharArray.length; i++) {
             System.out.print(urlCharArray[i]);
         }
+
+        System.out.println();
+        System.out.println();
+
+        /**
+         * Given a string, write a function to check if it is a permutation of a palindrome. A palindrome is
+         * a word or phrase that is the same forwards and backwards. A permutation is a rearrangement of
+         * letters. The palindrome does not need to be limited to just dictionary words.
+         * Input: 'TACT COA'     Output: 'TACO CAT', 'ATCO CTA', etc.
+         */
+        System.out.println("1.4: Given a string, write a function to check if it is a permutation of a palindrome. A palindrome is \n" +
+                                "a word or phrase that is the same forwards and backwards. A permutation is a rearrangement of \n" +
+                                "letters. The palindrome does not need to be limited to just dictionary words. \n" +
+                                "Input: 'TACT COA'     Output: 'TACO CAT', 'ATCO CTA', etc.");
+        String palindromePermutation = "TACO CAT";
+        System.out.println(arraysAndStrings.isPalindromePermutation(palindromePermutation) + ": " + palindromePermutation);
 
         System.out.println();
         System.out.println();
