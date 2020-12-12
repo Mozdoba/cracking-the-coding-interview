@@ -1,5 +1,6 @@
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class ArraysAndStrings {
@@ -135,6 +136,40 @@ public class ArraysAndStrings {
     // TIME COMPLEXITY? O(N)
     // SPACE COMPLEXITY? O(1)
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                  1.5 ONE WAY                                                         //
+    //  There are three types of edits that can be performed on strings: insert a character, remove a       //
+    //  character, or replace a character. Given two strings, write a function to check if they are one     //
+    //  edit (or zero edits away).                                                                          //
+    //   Example:  pale, ple -> true                                                                        //
+    //             pales, pale -> true                                                                      //
+    //             pale, bale -> true                                                                       //
+    //             pale, bake -> false                                                                      //
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public boolean isOneAway(String str1, String str2) {
+        int[] charSet1 = new int[128];
+        int[] charSet2 = new int[128];
+        for (int i = 0; i < str1.length(); i++) {
+            int asciiCode = str1.charAt(i);
+            charSet1[asciiCode]++;
+        }
+        for (int i = 0; i < str2.length(); i++) {
+            int asciiCode = str2.charAt(i);
+            charSet2[asciiCode]++;
+        }
+        int differences = 0;
+        for (int i = 0; i < charSet1.length; i++) {
+            if (charSet1[i] != charSet2[i]) {
+                differences++;
+            }
+        }
+        return differences <= 2;
+    }
+
+    // Time complexity: O(n)
+    // Space complexity: O(n)
+
     public static void main(String[] args) {
         System.out.println();
         ArraysAndStrings arraysAndStrings = new ArraysAndStrings();
@@ -193,6 +228,20 @@ public class ArraysAndStrings {
                                 "Input: 'TACT COA'     Output: 'TACO CAT', 'ATCO CTA', etc.");
         String palindromePermutation = "TACO CAT";
         System.out.println(arraysAndStrings.isPalindromePermutation(palindromePermutation) + ": " + palindromePermutation);
+
+        System.out.println();
+        System.out.println();
+
+        System.out.println("1.5: There are three types of edits that can be performed on strings: insert a character, remove a \n" +
+        "character, or replace a character. Given two strings, write a function to check if they are one\n" +
+        "edit (or zero edits away).\n" +
+        "Example:  pale, ple -> true                                                                   \n" +
+        "          pales, pale -> true                                                                 \n" +
+        "          pale, bale -> true                                                                  \n" +
+        "          pale, bake -> false                                                                 ");
+        String oneAwayStr1 = "loupe";
+        String oneAwayStr2 = "loup";
+        System.out.println(arraysAndStrings.isOneAway(oneAwayStr1, oneAwayStr2) + ": " + oneAwayStr1 + " <-> " + oneAwayStr2);
 
         System.out.println();
         System.out.println();
