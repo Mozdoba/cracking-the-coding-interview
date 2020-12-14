@@ -1,6 +1,5 @@
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class ArraysAndStrings {
@@ -123,7 +122,7 @@ public class ArraysAndStrings {
         HashSet<Character> charSet = new HashSet<>();
         for (int i = 0; i < str.length(); i++) {
             char letter = str.charAt(i);
-            if (letter == ' ') continue; //If spaces don't count as a character
+            if (letter == ' ') continue; // If spaces don't count as a character
             if (!charSet.contains(letter)) {
                 charSet.add(Character.valueOf(letter));
             } else {
@@ -134,7 +133,7 @@ public class ArraysAndStrings {
     }
 
     // TIME COMPLEXITY? O(N)
-    // SPACE COMPLEXITY? O(1)
+    // SPACE COMPLEXITY? O(N)
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                  1.5 ONE WAY                                                         //
@@ -170,12 +169,89 @@ public class ArraysAndStrings {
     // Time complexity: O(n)
     // Space complexity: O(n)
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                  1.6 STRING COMPRESSION                                              //
+    //      Implement a method to perform basic string compression using the counts of repeated characters  //
+    //      For example, the string aabccccaaa would become a2b1c5a3. If the "compressed" string would not  //
+    //      become smaller than the original string, your method should return the original string. You can //
+    //      assume the string has only uppercase and lowercase letters (a-z)                                //
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public String stringCompression(String str) {
+        StringBuilder newString = new StringBuilder(str.charAt(0));
+        int charCount = 0;
+        for (int i = 0; i < str.length(); i++) {
+            charCount++;
+            if (i == str.length()-1 || str.charAt(i) != str.charAt(i+1)) {
+                newString.append(str.charAt(i)).append(charCount);
+                charCount = 0;
+            }
+        }
+        return str.length() != newString.length() ? newString.toString() : str;
+    }
+
+    // Time Complexity O(n)
+    // Space Complexity O(n)
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                  1.7 ROTATE A MATRIX                                                 //
+    //  Given an image represented by an NxN matrix, where each pixel in the image is 4 bytes, write a      //
+    //  method to rotate the image by 90 degrees. Can you do this in place?                                 //
+    //                                                                                                      //
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public char[][] rotateMatrix90Degrees(char[][] matrix) {
+        int N = matrix.length;
+        char[][] rotated = new char[N][N];
+        for (int row = 0; row < matrix.length; row++) {
+            for (int col = 0; col < matrix.length; col++) {
+                rotated[(N-1) - col][row] = matrix[row][col];
+            }
+        }
+        return rotated;
+    }
+
+    public char[][] rotateMatrix90DegreesInPlace(char[][] matrix) {
+        int N = matrix.length;
+        int layers = (int) Math.ceil(N/2);
+        System.out.println("Matrix has Size: " + N + " layers: " + layers);
+        char[][] rotated = new char[N][N];
+        for (int row = 0; row < matrix.length; row++) {
+            for (int col = 0; col < matrix.length; col++) {
+                rotated[(N-1) - col][row] = matrix[row][col];
+            }
+        }
+        return rotated;
+    }
+
+    private static void printMatrix(char[][] matrix) {
+        for (int row = 0; row < matrix.length; row++) {
+            for (int col = 0; col < matrix.length; col++) {
+                System.out.print(matrix[row][col]);
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
+
+    private static char[][] createSampleMatrix(int size) {
+        char[][] matrix = new char[size][size];
+        char character = 'A';
+        for (int row = 0; row < matrix.length; row++) {
+            for (int col = 0; col < matrix.length; col++) {
+                matrix[row][col] = character++;
+            }
+        }
+        return matrix;
+    }
+
     public static void main(String[] args) {
         System.out.println();
         ArraysAndStrings arraysAndStrings = new ArraysAndStrings();
 
         /**
-         * 1.1 Implement an algorithm to determine if a string has all unique characters.
+         * 1.1 Implement an algorithm to determine if a string has all unique
+         * characters.
          */
         System.out.println("1.1: Implement an algorithm to determine if a string has all unique characters.");
         String uniqueString1_1 = "abcdefghijklmnopqrstuvwxyz";
@@ -185,31 +261,36 @@ public class ArraysAndStrings {
         System.out.println();
 
         /**
-         * 1.2 Given two strings, write an algorithm to determine if one string is a permutation of the other.
+         * 1.2 Given two strings, write an algorithm to determine if one string is a
+         * permutation of the other.
          */
-        System.out.println("1.2: Given two strings, write an algorithm to determine if one string is a permutation of the other.");
+        System.out.println(
+                "1.2: Given two strings, write an algorithm to determine if one string is a permutation of the other.");
         String stringA_1_2 = "race car";
         String stringB_1_2 = "race car";
-        System.out.println(arraysAndStrings.isPermutation(stringA_1_2, stringB_1_2) + ": '" + stringA_1_2 + "' '" + stringB_1_2 + "'");
+        System.out.println(arraysAndStrings.isPermutation(stringA_1_2, stringB_1_2) + ": '" + stringA_1_2 + "' '"
+                + stringB_1_2 + "'");
 
         System.out.println();
         System.out.println();
 
         /**
-         * Write a method to replace all spaces in a string with '%20'. You may assume that the string has
-         * sufficient space at the end to hold the additional characters, and that you are given the 'true'
-         * length of the string. (Note: if implementing in Java, please use a character array so that you)
-         * can perform this operation in place)
+         * Write a method to replace all spaces in a string with '%20'. You may assume
+         * that the string has sufficient space at the end to hold the additional
+         * characters, and that you are given the 'true' length of the string. (Note: if
+         * implementing in Java, please use a character array so that you) can perform
+         * this operation in place)
          */
-        System.out.println("1.3: Write a method to replace all spaces in a string with '%20'. You may assume that the string has \n" +
-                            "sufficient space at the end to hold the additional characters, and that you are given the 'true' \n" +
-                            "length of the string. (Note: if implementing in Java, please use a character array so that you) \n" +
-                            "can perform this operation in place).");
+        System.out.println(
+                "1.3: Write a method to replace all spaces in a string with '%20'. You may assume that the string has \n"
+                        + "sufficient space at the end to hold the additional characters, and that you are given the 'true' \n"
+                        + "length of the string. (Note: if implementing in Java, please use a character array so that you) \n"
+                        + "can perform this operation in place).");
         String urlString = "www.Does this work?.com    ";
         char[] urlCharArray = urlString.toCharArray();
         arraysAndStrings.urlify(urlCharArray);
 
-        for(int i = 0; i < urlCharArray.length; i++) {
+        for (int i = 0; i < urlCharArray.length; i++) {
             System.out.print(urlCharArray[i]);
         }
 
@@ -217,31 +298,57 @@ public class ArraysAndStrings {
         System.out.println();
 
         /**
-         * Given a string, write a function to check if it is a permutation of a palindrome. A palindrome is
-         * a word or phrase that is the same forwards and backwards. A permutation is a rearrangement of
-         * letters. The palindrome does not need to be limited to just dictionary words.
-         * Input: 'TACT COA'     Output: 'TACO CAT', 'ATCO CTA', etc.
+         * Given a string, write a function to check if it is a permutation of a
+         * palindrome. A palindrome is a word or phrase that is the same forwards and
+         * backwards. A permutation is a rearrangement of letters. The palindrome does
+         * not need to be limited to just dictionary words. Input: 'TACT COA' Output:
+         * 'TACO CAT', 'ATCO CTA', etc.
          */
-        System.out.println("1.4: Given a string, write a function to check if it is a permutation of a palindrome. A palindrome is \n" +
-                                "a word or phrase that is the same forwards and backwards. A permutation is a rearrangement of \n" +
-                                "letters. The palindrome does not need to be limited to just dictionary words. \n" +
-                                "Input: 'TACT COA'     Output: 'TACO CAT', 'ATCO CTA', etc.");
+        System.out.println(
+                "1.4: Given a string, write a function to check if it is a permutation of a palindrome. A palindrome is \n"
+                        + "a word or phrase that is the same forwards and backwards. A permutation is a rearrangement of \n"
+                        + "letters. The palindrome does not need to be limited to just dictionary words. \n"
+                        + "Input: 'TACT COA'     Output: 'TACO CAT', 'ATCO CTA', etc.");
         String palindromePermutation = "TACO CAT";
-        System.out.println(arraysAndStrings.isPalindromePermutation(palindromePermutation) + ": " + palindromePermutation);
+        System.out.println(
+                arraysAndStrings.isPalindromePermutation(palindromePermutation) + ": " + palindromePermutation);
 
         System.out.println();
         System.out.println();
 
-        System.out.println("1.5: There are three types of edits that can be performed on strings: insert a character, remove a \n" +
-        "character, or replace a character. Given two strings, write a function to check if they are one\n" +
-        "edit (or zero edits away).\n" +
-        "Example:  pale, ple -> true                                                                   \n" +
-        "          pales, pale -> true                                                                 \n" +
-        "          pale, bale -> true                                                                  \n" +
-        "          pale, bake -> false                                                                 ");
+        System.out.println(
+                "1.5: There are three types of edits that can be performed on strings: insert a character, remove a \n"
+                        + "character, or replace a character. Given two strings, write a function to check if they are one\n"
+                        + "edit (or zero edits away).\n"
+                        + "Example:  pale, ple -> true                                                                   \n"
+                        + "          pales, pale -> true                                                                 \n"
+                        + "          pale, bale -> true                                                                  \n"
+                        + "          pale, bake -> false                                                                 ");
         String oneAwayStr1 = "loupe";
         String oneAwayStr2 = "loup";
-        System.out.println(arraysAndStrings.isOneAway(oneAwayStr1, oneAwayStr2) + ": " + oneAwayStr1 + " <-> " + oneAwayStr2);
+        System.out.println(
+                arraysAndStrings.isOneAway(oneAwayStr1, oneAwayStr2) + ": " + oneAwayStr1 + " <-> " + oneAwayStr2);
+
+        System.out.println();
+        System.out.println();
+
+        System.out.println(
+                "1.6: Implement a method to perform basic string compression using the counts of repeated characters \n"
+                        + "For example, the string aabccccaaa would become a2b1c5a3. If the 'compressed' string would not \n"
+                        + "become smaller than the original string, your method should return the original string. You can\n"
+                        + "assume the string has only uppercase and lowercase letters (a-z)");
+        String unCompressedString = "aabcccccaaa";
+        System.out.println(arraysAndStrings.stringCompression(unCompressedString) + ": " + unCompressedString);
+
+        System.out.println();
+        System.out.println();
+
+        System.out.println(
+                "1.7: Given an image represented by an NxN matrix, where each pixel in the image is 4 bytes, write a\n"
+                        + "method to rotate the image by 90 degrees. Can you do this in place?");
+        char[][] matrix = createSampleMatrix(4);
+        printMatrix(matrix);
+        printMatrix(arraysAndStrings.rotateMatrix90Degrees(matrix));
 
         System.out.println();
         System.out.println();
