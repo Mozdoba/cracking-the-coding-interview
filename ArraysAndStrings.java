@@ -403,34 +403,41 @@ public class ArraysAndStrings {
     //   isSubstring (e.g., "waterbottle" is a rotation of "erbottlewat").                                  //
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public static boolean isRotationCTCISolution(String s1, String s2) {
+        if (s1.length() != s2.length()) return false;
+        StringBuilder sb = new StringBuilder(s1 + s1);
+        return isSubstring(sb.toString(), s2);
+    }
+
     public static boolean isRotation(String s1, String s2) {
-        int[] shiftTable = createShiftTable(s2);
-        int matchingCount = 0;
-
-        return true;
+        if (s1.length() != s2.length()) return false;
+        List<Integer> indexList = createShiftIndexList(s1.charAt(s1.length()-1), s2);
+        StringBuilder sb = new StringBuilder();
+        for (Integer shiftVal : indexList) {
+            sb = new StringBuilder(s2);
+            sb.insert(0, sb.substring(sb.length()-shiftVal));
+            sb.delete(sb.length()-shiftVal, sb.length());
+            int i = s1.length()-1;
+            while (i >= 0 && sb.charAt(i) == s1.charAt(i)) {
+                i--;
+            }
+            if (i == -1) break;
+        }
+        return isSubstring(s1, sb.toString());
     }
 
-    public static int[] createShiftTable(String pattern) {
-        int[] shiftTable = new int[128]; // assumption charSet is ASCII set of common chars
-        for (int i = 0; i < shiftTable.length; i++) {
-            shiftTable[i] = pattern.length();
+    public static ArrayList<Integer> createShiftIndexList(char c, String str) {
+        ArrayList<Integer> indexList = new ArrayList();
+        for (int i = str.length()-1; i >=0; i--) {
+            if (str.charAt(str.length()-1-i) == c) {
+                indexList.add(i);
+            }
         }
-        int shiftVal = pattern.length() - 1;
-        for (int i = 0; i < pattern.length() - 1; i++) {
-            shiftTable[pattern.charAt(i)] = shiftVal--;
-        }
-        return shiftTable;
+        return indexList;
     }
 
-    public static void printShiftTable(int[] shiftTable) {
-        for (int i = 0; i < shiftTable.length; i++) {
-            System.out.print(shiftTable[i]);
-        }
-        System.out.println();
-    }
-
-    private boolean isSubstring(String s1, String s2) {
-        return true;
+    public static boolean isSubstring(String s1, String s2) {
+        return s1.contains(s2);
     }
 
     public static void main(String[] args) {
@@ -556,7 +563,8 @@ public class ArraysAndStrings {
         printMatrix(zeroMatrix);
 
         System.out.println("1.9: ShiftTable\n");
-        System.out.println();
-        System.out.println();
+        String stringToMatch = "HighElfRedTape";
+        String rotatedString = "lfRedTapeHighE";
+        System.out.println(stringToMatch + " <-> " + rotatedString + " : " + isRotationCTCISolution(stringToMatch, rotatedString));
     }
 }
