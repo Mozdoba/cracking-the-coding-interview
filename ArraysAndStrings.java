@@ -342,6 +342,36 @@ public class ArraysAndStrings {
         }
     }
 
+    public void zeroMatrix2(int[][] M) {
+        if (M.length == 0) return;
+        Set<Integer> rowSet = new HashSet<Integer>();
+        Set<Integer> colSet = new HashSet<Integer>();
+        for (int row = 0; row < M.length; row++) {
+            for (int col = 0; col < M[M.length-1].length; col++) {
+                if (M[row][col] == 0) {
+                    rowSet.add(row);
+                    colSet.add(col);
+                }
+            }
+        }
+
+        setRowAndColToZero(M, rowSet, colSet);
+    }
+
+    private static void setRowAndColToZero(int[][] M, Set rowSet, Set colSet) {
+        for (Object row : rowSet.toArray()) {
+            for (int j = 0; j < M[0].length; j++) {
+                M[(int)row][j] = 0;
+            }
+        }
+
+        for (Object col : colSet.toArray()) {
+            for (int i = 0; i < M.length; i++) {
+                M[i][(int)col] = 0;
+            }
+        }
+    }
+
     private static int[][] createRandomZeroMatrix(int rows, int cols) {
         int[][] matrix = new int[rows][cols];
         Random rand = new Random();
@@ -483,11 +513,16 @@ public class ArraysAndStrings {
         int[][] zeroMatrix = createRandomZeroMatrix(4, 10);
         System.out.println("ORIGINAL");
         printMatrix(zeroMatrix);
-        arraysAndStrings.zeroMatrix(zeroMatrix);
+        arraysAndStrings.zeroMatrix2(zeroMatrix);
         System.out.println("ZERO-MATRIX");
         printMatrix(zeroMatrix);
         System.out.println();
         System.out.println();
 
+        System.out.println("1.8: Write an algorithm such that if an element in an MxN matrix is 0,\n" +
+        "its entire row and column are set to 0.");
+
+        System.out.println();
+        System.out.println();
     }
 }
