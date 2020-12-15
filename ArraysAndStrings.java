@@ -211,17 +211,77 @@ public class ArraysAndStrings {
         return rotated;
     }
 
-    public char[][] rotateMatrix90DegreesInPlace(char[][] matrix) {
-        int N = matrix.length;
-        int layers = (int) Math.ceil(N/2);
-        System.out.println("Matrix has Size: " + N + " layers: " + layers);
-        char[][] rotated = new char[N][N];
-        for (int row = 0; row < matrix.length; row++) {
-            for (int col = 0; col < matrix.length; col++) {
-                rotated[(N-1) - col][row] = matrix[row][col];
+    public boolean rotateMatrix90DegreesInPlace(char[][] matrix) {
+        if (matrix.length == 0 || matrix.length != matrix[0].length) return false;
+        for (int layer = 0; layer < matrix.length/2; layer++) {
+            int first = layer;
+            int last = matrix.length-1 - layer;
+            for (int i = first; i < last; i++) {
+                int offset = i - first;
+
+                // save top into temp
+                char temp = matrix[first][i];
+
+                // assign left to top
+                matrix[first][i] = matrix[last-offset][first];
+
+                //assign bottom to left
+                matrix[last-offset][first] = matrix[last][last-offset];
+
+                //assign right to bottom
+                matrix[last][last-offset] = matrix[i][last];
+
+                //assign temp to right
+                matrix[i][last] = temp;
             }
         }
-        return rotated;
+        return true;
+    }
+
+    public boolean rotateMatrix90DegreesClockWise(char[][] M) {
+        if (M.length == 0 || M.length != M[0].length) return false;
+        transposeMatrix(M); // flip matrix along diagonal
+        reverseRowsInMatrix(M);
+        return true;
+    }
+
+    public boolean rotateMatrix90DegreesCounterClockWise(char[][] M) {
+        if (M.length == 0 || M.length != M[0].length) return false;
+        transposeMatrix(M); // flip matrix along diagonal
+        reverseColumnsInMatrix(M);
+        return true;
+    }
+
+    private static void reverseRowsInMatrix(char[][] M) {
+        int N = M.length;
+        for(int row = 0; row < N; row++) {
+            for (int col = 0; col < N/2; col++) {
+                char temp = M[row][col];
+                M[row][col] = M[row][N-1-col];
+                M[row][N-1-col] = temp;
+            }
+        }
+    }
+
+    private static void reverseColumnsInMatrix(char[][] M) {
+        int N = M.length;
+        for (int col = 0; col < N; col++) {
+            for (int row = 0; row < N/2; row++) {
+                char temp = M[row][col];
+                M[row][col] = M[N-1-row][col];
+                M[N-1-row][col] = temp;
+            }
+        }
+    }
+
+    private static void transposeMatrix(char[][] M) {
+        for (int row = 0; row < M.length; row++) {
+            for (int col = 0; col <= row; col++) {
+                char temp = M[row][col];
+                M[row][col] = M[col][row];
+                M[col][row] = temp;
+            }
+        }
     }
 
     private static void printMatrix(char[][] matrix) {
@@ -346,9 +406,16 @@ public class ArraysAndStrings {
         System.out.println(
                 "1.7: Given an image represented by an NxN matrix, where each pixel in the image is 4 bytes, write a\n"
                         + "method to rotate the image by 90 degrees. Can you do this in place?");
-        char[][] matrix = createSampleMatrix(4);
-        printMatrix(matrix);
-        printMatrix(arraysAndStrings.rotateMatrix90Degrees(matrix));
+        char[][] rotateMatrixClockWise = createSampleMatrix(4);
+        char[][] rotateMatrixCounterClockwise = createSampleMatrix(4);
+        printMatrix(rotateMatrixClockWise);
+        System.out.println("CLOCKWISE");
+        arraysAndStrings.rotateMatrix90DegreesClockWise(rotateMatrixClockWise);
+        printMatrix(rotateMatrixClockWise);
+
+        System.out.println("COUNTER-CLOCKWISE");
+        arraysAndStrings.rotateMatrix90DegreesCounterClockWise(rotateMatrixCounterClockwise);
+        printMatrix(rotateMatrixCounterClockwise);
 
         System.out.println();
         System.out.println();
