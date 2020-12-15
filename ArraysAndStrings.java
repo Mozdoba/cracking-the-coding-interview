@@ -393,6 +393,46 @@ public class ArraysAndStrings {
         System.out.println();
     }
 
+    // Time Complexity: O(M*N) ... improved solution O( M*N )
+    // Space Complexity: O(M*N) ... improved solution O( MIN(M, N))
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                  1.8 STRING ROTATION                                                 //
+    //   Assume you have a method isSubstring which checks if one word is a substring of another. Given     //
+    //   two strings, s1 and s2, write code to check if s2 is a rotation of s1 using only one call to       //
+    //   isSubstring (e.g., "waterbottle" is a rotation of "erbottlewat").                                  //
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public static boolean isRotation(String s1, String s2) {
+        int[] shiftTable = createShiftTable(s2);
+        int matchingCount = 0;
+
+        return true;
+    }
+
+    public static int[] createShiftTable(String pattern) {
+        int[] shiftTable = new int[128]; // assumption charSet is ASCII set of common chars
+        for (int i = 0; i < shiftTable.length; i++) {
+            shiftTable[i] = pattern.length();
+        }
+        int shiftVal = pattern.length() - 1;
+        for (int i = 0; i < pattern.length() - 1; i++) {
+            shiftTable[pattern.charAt(i)] = shiftVal--;
+        }
+        return shiftTable;
+    }
+
+    public static void printShiftTable(int[] shiftTable) {
+        for (int i = 0; i < shiftTable.length; i++) {
+            System.out.print(shiftTable[i]);
+        }
+        System.out.println();
+    }
+
+    private boolean isSubstring(String s1, String s2) {
+        return true;
+    }
+
     public static void main(String[] args) {
         System.out.println();
         ArraysAndStrings arraysAndStrings = new ArraysAndStrings();
@@ -412,7 +452,8 @@ public class ArraysAndStrings {
          * 1.2 Given two strings, write an algorithm to determine if one string is a
          * permutation of the other.
          */
-        System.out.println( "1.2: Given two strings, write an algorithm to determine if one string is a permutation of the other.");
+        System.out.println(
+                "1.2: Given two strings, write an algorithm to determine if one string is a permutation of the other.");
         String stringA_1_2 = "race car";
         String stringB_1_2 = "race car";
         System.out.println(arraysAndStrings.isPermutation(stringA_1_2, stringB_1_2) + ": '" + stringA_1_2 + "' '"
@@ -505,23 +546,16 @@ public class ArraysAndStrings {
         arraysAndStrings.rotateMatrix90DegreesCounterClockWise(rotateMatrixCounterClockwise);
         printMatrix(rotateMatrixCounterClockwise);
 
-        System.out.println();
-        System.out.println();
-
-        System.out.println("1.8: Write an algorithm such that if an element in an MxN matrix is 0,\n" +
-        "its entire row and column are set to 0.");
+        System.out.println("1.8: Write an algorithm such that if an element in an MxN matrix is 0,\n"
+                + "its entire row and column are set to 0.");
         int[][] zeroMatrix = createRandomZeroMatrix(4, 10);
         System.out.println("ORIGINAL");
         printMatrix(zeroMatrix);
         arraysAndStrings.zeroMatrix2(zeroMatrix);
         System.out.println("ZERO-MATRIX");
         printMatrix(zeroMatrix);
-        System.out.println();
-        System.out.println();
 
-        System.out.println("1.8: Write an algorithm such that if an element in an MxN matrix is 0,\n" +
-        "its entire row and column are set to 0.");
-
+        System.out.println("1.9: ShiftTable\n");
         System.out.println();
         System.out.println();
     }
