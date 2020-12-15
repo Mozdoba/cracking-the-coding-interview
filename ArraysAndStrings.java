@@ -305,6 +305,64 @@ public class ArraysAndStrings {
         return matrix;
     }
 
+    // Time Complexity = O(N^2) Need to touch each element using CTCI Solution, however using the Transposition & Reverse,
+    // we don't actually touch each element twice. I think it is O(N*N/2);
+    // Space Complexity = O(1)
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                  1.8 ZERO MATRIX                                                     //
+    //  Write an algorithm such that if an element in an MxN matrix is 0, its entire row and column are     //
+    //  set to 0.                                                                                           //
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public void zeroMatrix(int[][] M) {
+        if (M.length == 0) return;
+        boolean[][] foundZero = new boolean[M.length][M[0].length];
+        for (int row = 0; row < M.length; row++) {
+            for (int col = 0; col < M[M.length-1].length; col++) {
+                if (M[row][col] == 0) foundZero[row][col] = true;
+            }
+        }
+
+        for (int row = 0; row < M.length; row++) {
+            for (int col = 0; col < M[M.length-1].length; col++) {
+                if (foundZero[row][col]) {
+                    setRowAndColToZero(M, row, col);
+                }
+            }
+        }
+    }
+
+    private static void setRowAndColToZero(int[][] M, int row, int col) {
+        for (int i = 0; i < M.length; i++) {
+            M[i][col] = 0;
+        }
+        for (int j = 0; j < M[M.length-1].length; j++) {
+            M[row][j] = 0;
+        }
+    }
+
+    private static int[][] createRandomZeroMatrix(int rows, int cols) {
+        int[][] matrix = new int[rows][cols];
+        Random rand = new Random();
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                matrix[row][col] = rand.nextInt(10);
+            }
+        }
+        return matrix;
+    }
+
+    private static void printMatrix(int[][] matrix) {
+        for (int row = 0; row < matrix.length; row++) {
+            for (int col = 0; col < matrix[0].length; col++) {
+                System.out.print(matrix[row][col]);
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
+
     public static void main(String[] args) {
         System.out.println();
         ArraysAndStrings arraysAndStrings = new ArraysAndStrings();
@@ -324,8 +382,7 @@ public class ArraysAndStrings {
          * 1.2 Given two strings, write an algorithm to determine if one string is a
          * permutation of the other.
          */
-        System.out.println(
-                "1.2: Given two strings, write an algorithm to determine if one string is a permutation of the other.");
+        System.out.println( "1.2: Given two strings, write an algorithm to determine if one string is a permutation of the other.");
         String stringA_1_2 = "race car";
         String stringB_1_2 = "race car";
         System.out.println(arraysAndStrings.isPermutation(stringA_1_2, stringB_1_2) + ": '" + stringA_1_2 + "' '"
@@ -405,9 +462,10 @@ public class ArraysAndStrings {
 
         System.out.println(
                 "1.7: Given an image represented by an NxN matrix, where each pixel in the image is 4 bytes, write a\n"
-                        + "method to rotate the image by 90 degrees. Can you do this in place?");
-        char[][] rotateMatrixClockWise = createSampleMatrix(4);
-        char[][] rotateMatrixCounterClockwise = createSampleMatrix(4);
+                        + "method to rotate the image by 90 degrees. Can you do this in place?\n Yes following answers are done in place.");
+        char[][] rotateMatrixClockWise = createSampleMatrix(5);
+        char[][] rotateMatrixCounterClockwise = createSampleMatrix(5);
+        System.out.println("ORIGINAL");
         printMatrix(rotateMatrixClockWise);
         System.out.println("CLOCKWISE");
         arraysAndStrings.rotateMatrix90DegreesClockWise(rotateMatrixClockWise);
@@ -419,5 +477,17 @@ public class ArraysAndStrings {
 
         System.out.println();
         System.out.println();
+
+        System.out.println("1.8: Write an algorithm such that if an element in an MxN matrix is 0,\n" +
+        "its entire row and column are set to 0.");
+        int[][] zeroMatrix = createRandomZeroMatrix(4, 10);
+        System.out.println("ORIGINAL");
+        printMatrix(zeroMatrix);
+        arraysAndStrings.zeroMatrix(zeroMatrix);
+        System.out.println("ZERO-MATRIX");
+        printMatrix(zeroMatrix);
+        System.out.println();
+        System.out.println();
+
     }
 }
