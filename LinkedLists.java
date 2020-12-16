@@ -47,6 +47,12 @@ public class LinkedLists {
     //                                        2.1 REMOVE DUPLICATES                                         //
     //      Write code to remove duplicates from an unsorted linked list. How do you solve this problem     //
     //      if a temporary buffer is not allowed?                                                           //
+    //                                                                                                      //
+    //      Time Complexity w/ Buffer: O(N)                                                                 //
+    //      Space Complexity w/ Buffer: O(N)                                                                //
+    //                                                                                                      //
+    //      Time Complexity without Buffer: O(N)                                                            //
+    //      Space Complexity without Buffer: O(N)                                                           //
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public void removeDuplicates(Node<Integer> head) {
@@ -106,12 +112,57 @@ public class LinkedLists {
         }
     }
 
-    public static void main(String[] args) {
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                        2.2 RETURN Kth TO LAST                                        //
+    //              Implement an algorithm to find the kth to last element of a singly linked list          //
+    //              FYI: I have defined it so that passing in k=0 returns the last element                  //
+    //                                                                                                      //
+    //      Time Complexity without Recursion: O(N)                                                         //
+    //      Space Complexity without Recursion: O(1)                                                        //
+    //                                                                                                      //
+    //      Time Complexity w/ Recursion: O(?)                                                              //
+    //      Space Complexity w/ Recursion: O(?)                                                             //
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public Node<Integer> getKthToLastNode(Node<Integer> head, int k) throws Exception {
+        if (k < 0) throw new Exception("Invalid Input: Below Zero");
+        Node<Integer> current = head;
+        int length = 0;
+        while (current != null) {
+            length++;
+            current = current.next;
+        }
+        if (k >= length) throw new Exception("Invalid Input: Index Out of Bounds");
+        current = head;
+        for (int i = 0; i < length-1-k; i++) {
+            current = current.next;
+        }
+        return current;
+    }
+
+    public static void main(String[] args) throws Exception {
         LinkedLists ll = new LinkedLists();
-        Node<Integer> head = ll.createLinkedList(10);
-        head.printLinkedList();
-        ll.removeDuplicatesNoBuffer(head);
-        head.printLinkedList();
+
+        System.out.println("Write code to remove duplicates from an unsorted linked list.\n" +
+                           "How do you solve this problem if a temporary buffer is not allowed?");
+        Node<Integer> headQ1 = ll.createLinkedList(10);
+        System.out.println("ORIGINAL LINKED LIST:");
+        headQ1.printLinkedList();
+        ll.removeDuplicatesNoBuffer(headQ1);
+        System.out.println("LINKED LIST DUPLICATES DELETED:");
+        headQ1.printLinkedList();
+        System.out.print("\n\n");
+
+        System.out.println("Implement an algorithm to find the kth to last element of a singly linked list:\n" +
+                            "FYI: I have defined it so that passing in k=0 means returning the last element");
+        Node<Integer> headQ2 = ll.createLinkedList(10);
+        System.out.println("ORIGINAL LINKED LIST:");
+        headQ2.printLinkedList();
+        int kthNodeToLast = 10;
+        Node<Integer> kToLast = ll.getKthToLastNode(headQ2, kthNodeToLast);
+        System.out.println("LINKED LIST Kth Node to Last & K=" + kthNodeToLast);
+        kToLast.printLinkedList();
+        System.out.print("\n\n");
     }
 
 
