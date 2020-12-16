@@ -85,14 +85,32 @@ public class LinkedLists {
     }
 
     public void removeDuplicatesNoBuffer(Node<Integer> head) {
+        Node<Integer> current = head;
+        Node<Integer> prevRunner = head;
+        Node<Integer> runner = head.next;
+        while (current != null) {
+            while (runner != null) {
+                if (current.data == runner.data) {
+                    prevRunner.next = runner.next;
+                } else {
+                    prevRunner = prevRunner.next;
+                }
+                runner = runner.next;
+            }
+            current = current.next;
+            prevRunner = current;
 
+            if (current != null) {
+                runner = current.next;
+            }
+        }
     }
 
     public static void main(String[] args) {
         LinkedLists ll = new LinkedLists();
         Node<Integer> head = ll.createLinkedList(10);
         head.printLinkedList();
-        ll.removeDuplicates2(head);
+        ll.removeDuplicatesNoBuffer(head);
         head.printLinkedList();
     }
 
