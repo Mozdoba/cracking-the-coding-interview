@@ -32,11 +32,17 @@ public class LinkedLists {
         }
     }
 
-    public Node<Integer> createLinkedList(int size) {
-        Random rand = new Random();
-        Node<Integer> head = new Node<>(rand.nextInt(4));
-        for (int i = 0; i < size; i++) {
-            head.appendToTail(rand.nextInt(4));
+    public Node<Integer> createLinkedList(int size, boolean random) {
+        Node<Integer> head = new Node<>(0);
+        if (random) {
+            Random rand = new Random();
+            for (int i = 0; i < size; i++) {
+                head.appendToTail(rand.nextInt(4));
+            }
+        } else {
+            for (int i = 1; i < size; i++) {
+                head.appendToTail(i);
+            }
         }
         return head;
     }
@@ -120,10 +126,11 @@ public class LinkedLists {
     //      Time Complexity without Recursion: O(N)                                                         //
     //      Space Complexity without Recursion: O(1)                                                        //
     //                                                                                                      //
-    //      Time Complexity w/ Recursion: O(?)                                                              //
-    //      Space Complexity w/ Recursion: O(?)                                                             //
+    //      Time Complexity w/ Recursion: O(2N) = O(N)                                                      //
+    //      Space Complexity w/ Recursion: O(N)                                                             //
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    // Brute Force method
     public Node<Integer> getKthToLastNode(Node<Integer> head, int k) throws Exception {
         if (k < 0) throw new Exception("Invalid Input: Below Zero");
         Node<Integer> current = head;
@@ -140,12 +147,34 @@ public class LinkedLists {
         return current;
     }
 
+    class Index {
+        public int value = 0;
+    }
+
+    public Node<Integer> getKthToLastNodeRecursiveDriver(Node<Integer> head, int k) {
+        Index index = new Index();
+        return getKthToLastNodeRecursive(head, k, index);
+    }
+
+    public Node<Integer> getKthToLastNodeRecursive(Node<Integer> node, int k, Index index) {
+        if (node == null) return null;
+        Node<Integer> nodeK = getKthToLastNodeRecursive(node.next, k, index);
+        if (k == index.value) nodeK = node;
+
+        // Need to increment index every visit on the way back up.
+        // If index++ was in an else statement, it would be stuck at the kth node
+        // and nodeK will be updated to current node every time after the kth node
+        // on the way back up
+        index.value++;
+        return nodeK;
+    }
+
     public static void main(String[] args) throws Exception {
         LinkedLists ll = new LinkedLists();
 
         System.out.println("Write code to remove duplicates from an unsorted linked list.\n" +
                            "How do you solve this problem if a temporary buffer is not allowed?");
-        Node<Integer> headQ1 = ll.createLinkedList(10);
+        Node<Integer> headQ1 = ll.createLinkedList(10, true);
         System.out.println("ORIGINAL LINKED LIST:");
         headQ1.printLinkedList();
         ll.removeDuplicatesNoBuffer(headQ1);
@@ -155,15 +184,13 @@ public class LinkedLists {
 
         System.out.println("Implement an algorithm to find the kth to last element of a singly linked list:\n" +
                             "FYI: I have defined it so that passing in k=0 means returning the last element");
-        Node<Integer> headQ2 = ll.createLinkedList(10);
+        Node<Integer> headQ2 = ll.createLinkedList(10, false);
         System.out.println("ORIGINAL LINKED LIST:");
         headQ2.printLinkedList();
-        int kthNodeToLast = 10;
-        Node<Integer> kToLast = ll.getKthToLastNode(headQ2, kthNodeToLast);
+        int kthNodeToLast = 5;
+        Node<Integer> kToLast = ll.getKthToLastNodeRecursiveDriver(headQ2, kthNodeToLast);
         System.out.println("LINKED LIST Kth Node to Last & K=" + kthNodeToLast);
         kToLast.printLinkedList();
         System.out.print("\n\n");
     }
-
-
 }
