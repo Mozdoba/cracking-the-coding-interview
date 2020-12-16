@@ -3,6 +3,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CodeLens (Launch) - LinkedLists",
+            "request": "launch",
+            "mainClass": "LinkedLists",
+            "projectName": "ctci_b4c0dfb9"
+        },
+        {
+            "type": "java",
             "name": "CodeLens (Launch) - ArraysAndStrings",
             "request": "launch",
             "mainClass": "ArraysAndStrings",
