@@ -169,10 +169,42 @@ public class LinkedLists {
         return nodeK;
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                        2.3 DELETE MIDDLE NODE                                        //
+    //              Implement an algorithm to delete a node in the middle (i.e, any node but the first      //
+    //              (and last node, not necessarily the exact middle) of a singly linked list, given        //
+    //              only access to that node.                                                               //
+    //                                                                                                      //
+    //              Example:                                                                                //
+    //              Input: The node C from the linked list A->B->C->D->E->F                                 //
+    //              Result: Nothing is returned, but the new linked list looks like A->B->D->E->F           //
+    //                                                                                                      //
+    //      Time Complexity without Recursion: O(N)                                                         //
+    //      Space Complexity without Recursion: O(1)                                                        //
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * We will make it appear like the current node is deleted by shifting all of the subsequent values 1 node back.
+     * Then we will remove the tail by setting tail-1 node's next value to null
+     *
+     * @param head - A node in the middle of Linked List. Cannot be the last node.
+     */
+    public void deleteMiddleNode(Node<Integer> head) {
+        Node<Integer> curNode = head;
+        while (curNode.next != null) {
+            curNode.data = curNode.next.data;
+            if (curNode.next.next == null) {
+                curNode.next = null; // remove the tail, current node is now the tail
+            } else {
+                curNode = curNode.next;
+            }
+        }
+    }
+
     public static void main(String[] args) throws Exception {
         LinkedLists ll = new LinkedLists();
 
-        System.out.println("Write code to remove duplicates from an unsorted linked list.\n" +
+        System.out.println("2.1 Write code to remove duplicates from an unsorted linked list.\n" +
                            "How do you solve this problem if a temporary buffer is not allowed?");
         Node<Integer> headQ1 = ll.createLinkedList(10, true);
         System.out.println("ORIGINAL LINKED LIST:");
@@ -182,7 +214,7 @@ public class LinkedLists {
         headQ1.printLinkedList();
         System.out.print("\n\n");
 
-        System.out.println("Implement an algorithm to find the kth to last element of a singly linked list:\n" +
+        System.out.println("2.2 Implement an algorithm to find the kth to last element of a singly linked list:\n" +
                             "FYI: I have defined it so that passing in k=0 means returning the last element");
         Node<Integer> headQ2 = ll.createLinkedList(10, false);
         System.out.println("ORIGINAL LINKED LIST:");
@@ -192,5 +224,25 @@ public class LinkedLists {
         System.out.println("LINKED LIST Kth Node to Last & K=" + kthNodeToLast);
         kToLast.printLinkedList();
         System.out.print("\n\n");
+
+        System.out.println("2.3 Implement an algorithm to delete a node in the middle (i.e, any node but the first\n" +
+                           "(and last node, not necessarily the exact middle) of a singly linked list, given\n" +
+                           "only access to that node.\n\n" +
+                           "Example:\n" +
+                           "Input: The node C from the linked list A->B->C->D->E->F\n" +
+                           "Result: Nothing is returned, but the new linked list looks like A->B->D->E->F\n");
+        Node<Integer> headQ3 = ll.createLinkedList(6, false);
+        System.out.println("ORIGINAL LINKED LIST:");
+        headQ3.printLinkedList();
+        System.out.println("LINKED LIST WITH DELETED INTERNAL NODE:");
+        ll.deleteMiddleNode(headQ3.next.next);
+        headQ3.printLinkedList();
+        System.out.print("\n\n");
+
+
+
+
+
+
     }
 }
