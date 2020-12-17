@@ -33,14 +33,14 @@ public class LinkedLists {
     }
 
     public Node<Integer> createLinkedList(int size, boolean random) {
-        Node<Integer> head = new Node<>(0);
+        Node<Integer> head = new Node<>(1);
         if (random) {
             Random rand = new Random();
             for (int i = 0; i < size; i++) {
-                head.appendToTail(rand.nextInt(4));
+                head.appendToTail(rand.nextInt(10));
             }
         } else {
-            for (int i = 1; i < size; i++) {
+            for (int i = 2; i < size; i++) {
                 head.appendToTail(i);
             }
         }
@@ -286,6 +286,10 @@ public class LinkedLists {
     //      Space Complexity: O(N)                                                                          //
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Once a sum is generated, the sum is incrementally processed to remove the single's digit (mod 10)
+     * and then updated after stripping off the singles digit (sum = [sum - stripped digit] / 10)
+     */
     public Node<Integer> sumReverseOrderLists(Node<Integer> headA, Node<Integer> headB) {
         int sum = sumReverseLists(headA, headB);
         if (sum == 0) {
@@ -308,12 +312,18 @@ public class LinkedLists {
         return head;
     }
 
+    /**
+     * Sums the Lists Digit by Digit, every node traversed increases the multiplier
+     * by a factor of 10. Once the shorter list is traversed, the nodes in the
+     * remaining list are processed.
+     */
     private int sumReverseLists(Node<Integer> headA, Node<Integer> headB) {
         Node<Integer> nodeA = headA;
         Node<Integer> nodeB = headB;
         int sum = 0;
         int multiplier = 1;
 
+        // we can process them together, they both start at the 1's digit
         while (nodeA != null & nodeB != null) {
             sum += (nodeA.data * multiplier) + (nodeB.data * multiplier);
             multiplier *= 10;
@@ -328,6 +338,56 @@ public class LinkedLists {
             nodeC = nodeC.next;
         }
         return sum;
+    }
+
+    public Node<Integer> sumLinkedLists(Node<Integer> headA, Node<Integer> headB) {
+        int sum = sumLists(headA, headB);
+        if (sum == 0) {
+            return new Node<Integer>(0);
+        }
+        int factor10 = (int) ((Math.pow(10, Math.floor(Math.log10(sum)))));
+        int digit = sum / factor10;
+        sum -= digit * factor10;
+        factor10 /= 10;
+
+        Node<Integer> head = new Node<>(digit);
+        Node<Integer> curNode = head;
+
+        while (sum > 0) {
+            digit = sum / factor10;
+            sum -= digit * factor10;
+            factor10 /= 10;
+            Node<Integer> newNode = new Node<>(digit);
+            curNode.next = newNode;
+            curNode = newNode;
+        }
+
+        return head;
+    }
+
+    /**
+     * Creates two strings, one out of each list and then sums the strings
+     * using parseInt() with a radix of 10
+     */
+    private int sumLists(Node<Integer> headA, Node<Integer> headB) {
+        Node<Integer> nodeA = headA;
+        Node<Integer> nodeB = headB;
+        String sumA = "";
+        String sumB = "";
+
+        // This time we can't process both lists simultaneously.
+        // They may start at different powers of 10 (10 vs 1's)
+        while (nodeA != null) {
+            sumA += nodeA.data;
+            nodeA = nodeA.next;
+        }
+
+        while (nodeB != null) {
+            sumB += nodeB.data;
+            nodeB = nodeB.next;
+        }
+
+        return Integer.parseInt(sumA, 10) + Integer.parseInt(sumB, 10);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -379,7 +439,7 @@ public class LinkedLists {
         headQ3.printLinkedList();
         System.out.print("\n\n");
 
-        System.out.println("Write code to partition a linked list around a value x, such that all nodes less\n" +
+        System.out.println("2.4 Write code to partition a linked list around a value x, such that all nodes less\n" +
                            "than x come before all nodes greater than or equal to x. If x is contained within\n" +
                            "the list, the values of x only need to be after the elements less than x (see below).\n" +
                            "The partition element x can appear anywhere in the 'right partition'; it does not need\n" +
@@ -396,7 +456,7 @@ public class LinkedLists {
         headQ4.printLinkedList();
         System.out.print("\n\n");
 
-        System.out.println("You have two numbers represented by a linked list, where each node contains a single digit.\n" +
+        System.out.println("2.5 You have two numbers represented by a linked list, where each node contains a single digit.\n" +
                            "The digits are stored in reverse order, such that the 1 's digit is at the head of the list.\n" +
                            "Write a function that adds the two numbers and returns the sum as a linked list.");
         Node<Integer> headQ5A = ll.createLinkedList(3, true);
@@ -407,7 +467,15 @@ public class LinkedLists {
         System.out.println("REVERSE DIGIT SUM:");
         Node<Integer> headQ5C = ll.sumReverseOrderLists(headQ5A, headQ5B);
         headQ5C.printLinkedList();
-        System.out.print("\n\n");
+        System.out.print("\n");
 
+        System.out.println("2.5 FOLLOW UP\nSuppose the digits are stored in forward order. Repeat the above problem.\n");
+        System.out.println("ORIGINAL FORWARD DIGIT LINKED LISTS:");
+        headQ5A.printLinkedList();
+        headQ5B.printLinkedList();
+        System.out.println("Forward DIGIT SUM:");
+        Node<Integer> headQ5D = ll.sumLinkedLists(headQ5A, headQ5B);
+        headQ5D.printLinkedList();
+        System.out.print("\n\n");
     }
 }
