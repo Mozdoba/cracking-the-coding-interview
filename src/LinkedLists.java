@@ -179,8 +179,8 @@ public class LinkedLists {
     //              Input: The node C from the linked list A->B->C->D->E->F                                 //
     //              Result: Nothing is returned, but the new linked list looks like A->B->D->E->F           //
     //                                                                                                      //
-    //      Time Complexity without Recursion: O(N)                                                         //
-    //      Space Complexity without Recursion: O(1)                                                        //
+    //      Time Complexity: O(N)                                                                           //
+    //      Space Complexity: O(1)                                                                          //
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
@@ -200,6 +200,146 @@ public class LinkedLists {
             }
         }
     }
+
+    /**
+     * We don't need to iterate through every subsequent node, all we need to do is
+     * copy the next node's data and then delete it
+     *
+     * @param head - A node in the middle of Linked List. Cannot be the last node.
+     */
+    public void deleteMiddleNodeImproved(Node<Integer> head) {
+        if (head.next != null) {
+            head.data = head.next.data;
+            head.next = head.next.next;
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                        2.4 PARTITION                                                 //
+    //      Write code to partition a linked list around a value x, such that all nodes less                //
+    //      than x come before all nodes greater than or equal to x. If x is contained within               //
+    //      the list, the values of x only need to be after the elements less than x (see below).           //
+    //      The partition element x can appear anywhere in the "right partition"; it does not need          //
+    //      to appear between the left and right partitions.                                                //
+    //                                                                                                      //
+    //      Example:                                                                                        //
+    //      Input: 3 -> 5 -> 8 -> 5 -> 10 -> 2 -> 1  [partition=5]                                          //
+    //      Result: 3 -> 1 -> 2 -> 10 -> 5 -> 5 -> 8                                                        //
+    //                                                                                                      //
+    //      Time Complexity: O(N)                                                                           //
+    //      Space Complexity: O(1)                                                                          //
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Re-partitions by keeping track of the HEAD and TAIL. Nodes with
+     * values smaller than X will be pre-pended and set as HEAD. Nodes with
+     * values equal to or larger than X will be appended to the TAIL.
+     */
+    public Node<Integer> partitionLinkedList(Node<Integer> head, int x) {
+        Node<Integer> tail = head;
+        Node<Integer> curNode = head;
+        Node<Integer> next;
+
+        while (curNode != null) {
+            next = curNode.next;
+            if (curNode.data < x) {
+                curNode.next = head;
+                head = curNode;
+            } else {
+                tail.next = curNode;
+                tail = curNode;
+            }
+            curNode = next;
+        }
+
+        tail.next = null;
+
+        /**
+         * head has changed, need to return it, if we don't
+         * printing Head will only give values that haven't been been reshuffled
+         * to in front of original HEAD
+         */
+        return head;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                        2.5 SUM LISTS                                                 //
+    //      You have two numbers represented by a linked list, where each node contains a single digit.     //
+    //      The digits are stored in reverse order, such that the 1 's digit is at the head of the list.    //
+    //      Write a function that adds the two numbers and returns the sum as a linked list.                //
+    //                                                                                                      //
+    //      Example:                                                                                        //
+    //      Input: (7-> 1 -> 6) + (5 -> 9 -> 2) ...That is, 617 + 295.                                      //
+    //      Result: 9 -> 1 -> 2 ...That is, 912.                                                            //
+    //                                                                                                      //
+    //      Time Complexity: O(2N) = O(N)                                                                   //
+    //      Space Complexity: O(N)                                                                          //
+    //                                                                                                      //
+    //      FOLLOW UP                                                                                       //
+    //      Suppose the digits are stored in forward order. Repeat the above problem.                       //
+    //                                                                                                      //
+    //      EXAMPLE                                                                                         //
+    //      Input: (6 -> 1 -> 7) + (2 -> 9 -> 5)  ...That is, 617 + 295                                     //
+    //      Output: 9 -> 1 -> 2 ...That is, 912.                                                            //
+    //                                                                                                      //                                                                             //
+    //      Time Complexity: O(2N) = O(N)                                                                   //
+    //      Space Complexity: O(N)                                                                          //
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public Node<Integer> sumReverseOrderLists(Node<Integer> headA, Node<Integer> headB) {
+        int sum = sumReverseLists(headA, headB);
+        if (sum == 0) {
+            return new Node<Integer>(0);
+        }
+
+        int digit = sum % 10;
+        sum = (sum - digit) / 10;
+        Node<Integer> head = new Node<>(digit);
+        Node<Integer> curNode = head;
+
+        while (sum > 0) {
+            digit = sum % 10;
+            sum = (sum - digit) / 10;
+            Node<Integer> newNode = new Node<>(digit);
+            curNode.next = newNode;
+            curNode = newNode;
+        }
+
+        return head;
+    }
+
+    private int sumReverseLists(Node<Integer> headA, Node<Integer> headB) {
+        Node<Integer> nodeA = headA;
+        Node<Integer> nodeB = headB;
+        int sum = 0;
+        int multiplier = 1;
+
+        while (nodeA != null & nodeB != null) {
+            sum += (nodeA.data * multiplier) + (nodeB.data * multiplier);
+            multiplier *= 10;
+            nodeA = nodeA.next;
+            nodeB = nodeB.next;
+        }
+
+        Node<Integer> nodeC = (nodeA == null) ? nodeB : nodeA;
+        while (nodeC != null) {
+            sum += nodeC.data * multiplier;
+            multiplier *= 10;
+            nodeC = nodeC.next;
+        }
+        return sum;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                        2.7 INTERSECTION                                              //
+    //      Given two (singly) linked lists, determine if the two lists intersect. Return the               //
+    //      inter­secting node. Note that the intersection is defined based on reference, not value.         //
+    //      That is, if the kth node of the first linked list is the exact same node (by reference)         //
+    //      as the jth node of the second linked list, then they are intersecting.                          //
+    //                                                                                                      //
+    //      Time Complexity: O(N)                                                                           //
+    //      Space Complexity: O(1)                                                                          //
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public static void main(String[] args) throws Exception {
         LinkedLists ll = new LinkedLists();
@@ -235,14 +375,39 @@ public class LinkedLists {
         System.out.println("ORIGINAL LINKED LIST:");
         headQ3.printLinkedList();
         System.out.println("LINKED LIST WITH DELETED INTERNAL NODE:");
-        ll.deleteMiddleNode(headQ3.next.next);
+        ll.deleteMiddleNodeImproved(headQ3.next.next);
         headQ3.printLinkedList();
         System.out.print("\n\n");
 
+        System.out.println("Write code to partition a linked list around a value x, such that all nodes less\n" +
+                           "than x come before all nodes greater than or equal to x. If x is contained within\n" +
+                           "the list, the values of x only need to be after the elements less than x (see below).\n" +
+                           "The partition element x can appear anywhere in the 'right partition'; it does not need\n" +
+                           "to appear between the left and right partitions.\n\n" +
+                           "Example:\n" +
+                           "Input: 3 -> 5 -> 8 -> 5 -> 10 -> 2 -> 1  [partition=5]\n" +
+                           "Result: 3 -> 1 -> 2 -> 10 -> 5 -> 5 -> 8\n");
+        Node<Integer> headQ4 = ll.createLinkedList(6, false);
+        System.out.println("ORIGINAL LINKED LIST:");
+        headQ4.printLinkedList();
+        int partition = 3;
+        System.out.println("LINKED LIST PARTITIONED AT: " + partition);
+        headQ4 = ll.partitionLinkedList(headQ4, partition);
+        headQ4.printLinkedList();
+        System.out.print("\n\n");
 
-
-
-
+        System.out.println("You have two numbers represented by a linked list, where each node contains a single digit.\n" +
+                           "The digits are stored in reverse order, such that the 1 's digit is at the head of the list.\n" +
+                           "Write a function that adds the two numbers and returns the sum as a linked list.");
+        Node<Integer> headQ5A = ll.createLinkedList(3, true);
+        Node<Integer> headQ5B = ll.createLinkedList(2, true);
+        System.out.println("ORIGINAL REVERSE DIGIT LINKED LISTS:");
+        headQ5A.printLinkedList();
+        headQ5B.printLinkedList();
+        System.out.println("REVERSE DIGIT SUM:");
+        Node<Integer> headQ5C = ll.sumReverseOrderLists(headQ5A, headQ5B);
+        headQ5C.printLinkedList();
+        System.out.print("\n\n");
 
     }
 }
