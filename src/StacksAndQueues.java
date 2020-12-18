@@ -86,6 +86,7 @@ public class StacksAndQueues {
                 return arr[index3Top-1];
             }
         }
+
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -113,9 +114,9 @@ public class StacksAndQueues {
             StackNode(int data) {
                 this.data = data;
                 if (top == null) {
-                    top = (StackNode) this;
                     stackMin = nodeMin = data;
                 } else {
+                    next = top;
                     nodeMin = data < next.nodeMin ? data : next.nodeMin;
                     stackMin = stackMin < nodeMin ? stackMin : nodeMin;
                 }
@@ -131,7 +132,7 @@ public class StacksAndQueues {
 
         public int pop() throws Exception {
             if (isEmpty()) throw new EmptyStackException();
-            stackMin = top.next.nodeMin;
+            stackMin = top.next == null ? -1 : top.next.nodeMin;
             int data = top.data;
             top = top.next;
             size--;
@@ -155,6 +156,15 @@ public class StacksAndQueues {
         public int min () {
             return stackMin;
         }
+
+        public void print() {
+            StackNode curr = top;
+            System.out.print("Stack: ");
+            while (curr != null) {
+                System.out.print("" + curr.data + "->");
+                curr = curr.next;
+            }
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -174,6 +184,7 @@ public class StacksAndQueues {
 
     public static void main(String[] args) throws Exception {
         StacksAndQueues sq = new StacksAndQueues();
+        System.out.println("3.1: Describe how you could use a single array to implement three stacks.\n");
         FixedSizeThreeStack threeStack = sq.new FixedSizeThreeStack(1);
         threeStack.push(1, 1);
         threeStack.push(2, 2);
@@ -186,5 +197,31 @@ public class StacksAndQueues {
         threeStack.pop(1);
         threeStack.pop(2);
         threeStack.pop(3);
+        System.out.println();
+        System.out.println("3.2: How would you design a stack which, in addition to push and pop, has a function min which\n" +
+        "returns the minimum element? Push, pop and min should all operate in 0(1) time.\n");
+        MinStack minStack = sq.new MinStack();
+        minStack.push(5);
+        minStack.push(2);
+        minStack.push(3);
+        minStack.push(4);
+        minStack.push(1);
+        minStack.print();
+        System.out.println(" Min: " + minStack.min());
+        minStack.pop();
+        minStack.print();
+        System.out.println(" Min: " + minStack.min());
+        minStack.pop();
+        minStack.print();
+        System.out.println(" Min: " + minStack.min());
+        minStack.pop();
+        minStack.print();
+        System.out.println(" Min: " + minStack.min());
+        minStack.pop();
+        minStack.print();
+        System.out.println(" Min: " + minStack.min());
+        minStack.pop();
+        minStack.print();
+        System.out.println(" Min: " + minStack.min());
     }
 }
