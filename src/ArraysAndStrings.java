@@ -427,7 +427,7 @@ public class ArraysAndStrings {
     }
 
     public static ArrayList<Integer> createShiftIndexList(char c, String str) {
-        ArrayList<Integer> indexList = new ArrayList();
+        ArrayList<Integer> indexList = new ArrayList<>();
         for (int i = str.length()-1; i >=0; i--) {
             if (str.charAt(str.length()-1-i) == c) {
                 indexList.add(i);

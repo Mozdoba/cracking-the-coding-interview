@@ -3,50 +3,6 @@ import java.util.EmptyStackException;
 
 public class StacksAndQueues {
 
-    public class MyStack<T> {
-        private MyStackNode<T> top;
-        private int size = 0;
-
-        public MyStack() {}
-
-        private class MyStackNode<T> {
-            T data;
-            MyStackNode<T> next;
-            MyStackNode(T data) {
-                this.data = data;
-                this.next = null;
-            }
-        }
-
-        public void push(T data) {
-            MyStackNode<T> newTop = new MyStackNode<>(data);
-            newTop.next = top;
-            top = newTop;
-            size++;
-        }
-
-        public T pop() throws Exception {
-            if (isEmpty()) throw new EmptyStackException();
-            T data = top.data;
-            top = top.next;
-            size--;
-
-            return data;
-        }
-
-        public T peek() throws Exception {
-            if (isEmpty()) throw new EmptyStackException();
-            return top.data;
-        }
-
-        public boolean isEmpty() {
-            return top == null;
-        }
-
-        public int size() {
-            return size;
-        }
-    }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                        3.1 THREE IN ONE                                              //
     //      Describe how you could use a single array to implement three stacks.                            //
@@ -123,11 +79,11 @@ public class StacksAndQueues {
         public int peek(int stack) throws Exception {
             if (isEmpty(stack)) throw new Exception("Stack " + stack + " is empty");
             if (stack == 1) {
-                return arr[index1Top];
+                return arr[index1Top-1]; // Need to go back an index to look at the last added value
             } else if (stack == 2) {
-                return arr[index2Top];
+                return arr[index2Top-1];
             } else {
-                return arr[index3Top];
+                return arr[index3Top-1];
             }
         }
     }
@@ -136,7 +92,70 @@ public class StacksAndQueues {
     //                                        3.2 STACK MINIMUM                                             //
     //      How would you design a stack which, in addition to push and pop, has a function min which       //
     //      returns the minimum element? Push, pop and min should all operate in 0(1) time.                 //
+    //                                                                                                      //
+    //      Keeping track of the min with every push and pop wouldn't work because as soon as we pop        //
+    //      a min value, we would have to recalculate the new min by searching, thus violating our O(1)     //
+    //      time limitation. A solution will be for each StackNode to keep track of the the min underneath  //
+    //      it. Every time we add, the min for the stack gets updated with the min of the top of the stack  //
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public class MinStack {
+        private StackNode top;
+        private int size = 0;
+        private int stackMin;
+
+        public MinStack() {}
+
+        private class StackNode {
+            int data;
+            StackNode next;
+            int nodeMin;
+            StackNode(int data) {
+                this.data = data;
+                if (top == null) {
+                    top = (StackNode) this;
+                    stackMin = nodeMin = data;
+                } else {
+                    nodeMin = data < next.nodeMin ? data : next.nodeMin;
+                    stackMin = stackMin < nodeMin ? stackMin : nodeMin;
+                }
+            }
+        }
+
+        public void push(int data) {
+            StackNode newTop = new StackNode(data);
+            newTop.next = top;
+            top = newTop;
+            size++;
+        }
+
+        public int pop() throws Exception {
+            if (isEmpty()) throw new EmptyStackException();
+            stackMin = top.next.nodeMin;
+            int data = top.data;
+            top = top.next;
+            size--;
+
+            return data;
+        }
+
+        public int peek() throws Exception {
+            if (isEmpty()) throw new EmptyStackException();
+            return top.data;
+        }
+
+        public boolean isEmpty() {
+            return top == null;
+        }
+
+        public int size() {
+            return size;
+        }
+
+        public int min () {
+            return stackMin;
+        }
+    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                        3.3 STACK OF PLATES                                           //
@@ -155,25 +174,17 @@ public class StacksAndQueues {
 
     public static void main(String[] args) throws Exception {
         StacksAndQueues sq = new StacksAndQueues();
-        FixedSizeThreeStack threeStack = sq.new FixedSizeThreeStack(3);
+        FixedSizeThreeStack threeStack = sq.new FixedSizeThreeStack(1);
         threeStack.push(1, 1);
-        threeStack.push(1, 2);
-        threeStack.push(1, 3);
-        threeStack.push(2, 4);
-        threeStack.push(2, 5);
-        threeStack.push(2, 6);
-        threeStack.push(3, 7);
-        threeStack.push(3, 8);
-        threeStack.push(3, 9);
+        threeStack.push(2, 2);
+        threeStack.push(3, 3);
+
+        System.out.println(threeStack.peek(1));
+        System.out.println(threeStack.peek(2));
+        System.out.println(threeStack.peek(3));
 
         threeStack.pop(1);
-        threeStack.pop(1);
-        threeStack.pop(1);
         threeStack.pop(2);
-        threeStack.pop(2);
-        threeStack.pop(2);
-        threeStack.pop(3);
-        threeStack.pop(3);
         threeStack.pop(3);
     }
 }
