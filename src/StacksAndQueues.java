@@ -1,5 +1,7 @@
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
 import java.util.EmptyStackException;
+import java.util.Stack;
 
 public class StacksAndQueues {
 
@@ -182,6 +184,66 @@ public class StacksAndQueues {
     //                                                                                                      //
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    class SetOfStacks {
+        ArrayList<Stack<Integer>> stacks = new ArrayList<>();
+        int capacity = 3;
+        int size = 0;
+
+        public SetOfStacks() {
+            stacks.add(new Stack<Integer>());
+        }
+
+        public boolean isFull(Stack<Integer> stack) {
+            if (stack.size() == capacity) {
+                return true;
+            }
+            return false;
+        }
+
+        public void push(int data) {
+            if (isFull(stacks.get(stacks.size() - 1))) {
+                stacks.add(new Stack<Integer>());
+            }
+            stacks.get(stacks.size() - 1).add(data);
+            size++;
+        }
+
+        public int pop() {
+            if (stacks.get(0).isEmpty()) throw new EmptyStackException();
+            if (stacks.get(stacks.size() - 1).isEmpty()) {
+                stacks.remove(stacks.size() - 1);
+            }
+            size--;
+            return stacks.get(stacks.size() - 1).pop();
+        }
+
+        public int peek() {
+            if (stacks.get(0).isEmpty()) throw new EmptyStackException();
+            if (stacks.get(stacks.size() - 1).isEmpty()) {
+                return stacks.get(stacks.size() - 2).peek();
+            }
+            return stacks.get(stacks.size() - 1).peek();
+        }
+
+        /**
+         *
+         * @param index the contiguous index to pop at.
+         * @return an integer at the specified contiguous index
+         */
+        public int popAt(int index) {
+            if (index < 0 || index >= size) throw new InvalidParameterException("Requested size is either to big or less than 0");
+            ArrayList<Integer> dataList = new ArrayList<>();
+            while (size > index) {
+                dataList.add(pop());
+            }
+            int data = dataList.remove(dataList.size()-1);
+            int size = dataList.size();
+            for (int i = size-1; i >= 0; i--) {
+                push(dataList.remove(i));
+            }
+            return data;
+        }
+    }
     public static void main(String[] args) throws Exception {
         StacksAndQueues sq = new StacksAndQueues();
         System.out.println("3.1: Describe how you could use a single array to implement three stacks.\n");
@@ -223,5 +285,28 @@ public class StacksAndQueues {
         minStack.pop();
         minStack.print();
         System.out.println(" Min: " + minStack.min());
+
+        System.out.println();
+        System.out.println("3.3: Imagine a (literal) stack of plates. If the stack gets too high, it might topple.\n" +
+        "Therefore, in real life, we would likely start a new stack when the previous stack exceeds some\n" +
+        "threshold. Implement a data structure SetOfStacks that mimics this. SetOfStacks should\n" +
+        "be composed of several stacks and should create a new stack once the previous one exceeds\n" +
+        "capacity. SetOfStacks. push() and SetOfStacks. pop() should behave identically to a single\n" +
+        "stack (that is, pop() should return the same values as it would if there were just a single\n" +
+        "stack).\n\nFOLLOW UP\n" +
+        "Implement a function popAt(int index) which performs a pop operation on a specific sub-stack.\n");
+        SetOfStacks setOfStacks = sq.new SetOfStacks();
+        System.out.println("Pushing:");
+        for (int i = 0; i < 12; i++) {
+            System.out.print(i + " ");
+            setOfStacks.push(i);
+        }
+        System.out.println("\nPopping at index 1:");
+        System.out.println(setOfStacks.popAt(1));
+        System.out.println("Popping:");
+        for (int i = 0; i < 11; i++) {
+            System.out.print(setOfStacks.pop() + " ");
+        }
+        System.out.println();
     }
 }
