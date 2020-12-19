@@ -226,11 +226,12 @@ public class StacksAndQueues {
         }
 
         /**
-         *
-         * @param index the contiguous index to pop at.
+         * Removes an item at the specific index and does so by popping until we reach that index, and then
+         * pushing all of the items back onto the multistack.
+         * @param index the contiguous index to remove.
          * @return an integer at the specified contiguous index
          */
-        public int popAt(int index) {
+        public int removeIndex(int index) {
             if (index < 0 || index >= size) throw new InvalidParameterException("Requested size is either to big or less than 0");
             ArrayList<Integer> dataList = new ArrayList<>();
             while (size > index) {
@@ -243,6 +244,47 @@ public class StacksAndQueues {
             }
             return data;
         }
+
+        /**
+         * Pops an item at the specified stack and then re-shifts the numbers at larger stacks to fill in the space
+         * at the stack that was popped.
+         * @param stack - The first stack is at 0
+         * @return an integer at the specified contiguous index
+         */
+        public int popAt(int stack) {
+            if (stack < 0 || stack >= stacks.size()) {
+                throw new InvalidParameterException("Requested size is either to big or less than 0. " +
+                "Valid parameters are in the range from 0 to " + (stacks.size()-1));
+            }
+            // If we want to pop at the last available stack, do a regular pop
+            if (stack == stacks.size()-1) {
+                return pop();
+            }
+            // Pop at specified stack and shift everything over
+            ArrayList<Integer> dataList = new ArrayList<Integer>();
+            int topIndexOfSpecifiedStack = capacity * (stack + 1) - 1;
+            while (size-1 >= topIndexOfSpecifiedStack) {
+                dataList.add(pop());
+            }
+            int data = dataList.remove(dataList.size()-1);
+
+            // Need to add items back into multistack.
+            int numToPush = dataList.size();
+            for (int i = numToPush-1; i >= 0; i--) {
+                push(dataList.remove(i));
+            }
+			return data;
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                        3.3 QUEUE VIA STACKS                                          //
+    //      Implement a MyQueue class which implements a queue using two stacks.                            //
+    //                                                                                                      //
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    class MyQueue {
+
     }
     public static void main(String[] args) throws Exception {
         StacksAndQueues sq = new StacksAndQueues();
@@ -301,8 +343,8 @@ public class StacksAndQueues {
             System.out.print(i + " ");
             setOfStacks.push(i);
         }
-        System.out.println("\nPopping at index 1:");
-        System.out.println(setOfStacks.popAt(1));
+        System.out.println("\nPopAt:");
+        System.out.println(setOfStacks.popAt(0));
         System.out.println("Popping:");
         for (int i = 0; i < 11; i++) {
             System.out.print(setOfStacks.pop() + " ");
