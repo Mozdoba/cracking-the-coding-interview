@@ -1,9 +1,14 @@
 import java.security.InvalidParameterException;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.EmptyStackException;
+import java.util.LinkedList;
+import java.util.Random;
 import java.util.Stack;
 
 public class StacksAndQueues {
+
+    static enum MyAnimal {DOG, CAT}; //QUESTION 3.6
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                        3.1 THREE IN ONE                                              //
@@ -186,7 +191,7 @@ public class StacksAndQueues {
 
     class SetOfStacks {
         ArrayList<Stack<Integer>> stacks = new ArrayList<>();
-        int capacity = 3;
+        int capacity = 3; // Capacity of each stack before rolling over to a new stack
         int size = 0;
 
         public SetOfStacks() {
@@ -278,14 +283,220 @@ public class StacksAndQueues {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //                                        3.3 QUEUE VIA STACKS                                          //
+    //                                        3.4 QUEUE VIA STACKS                                          //
     //      Implement a MyQueue class which implements a queue using two stacks.                            //
     //                                                                                                      //
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     class MyQueue {
+        Stack<Integer> newest;
+        Stack<Integer> oldest;
 
+        public MyQueue() {
+            newest = new Stack<>();
+            oldest = new Stack<>();
+        }
+
+        int size() {
+            return newest.size() + oldest.size();
+        }
+
+        void push(int data) {
+            newest.push(data);
+        }
+
+        int pop() throws Exception {
+            if (size() == 0) throw new Exception("Queue is empty");
+            shiftOldToNew();
+            return oldest.pop();
+        }
+
+        private void shiftOldToNew() {
+            if (oldest.isEmpty()) {
+                while (!newest.empty()) {
+                    oldest.push(newest.pop());
+                }
+            }
+        }
+
+        int peek() {
+            shiftOldToNew();
+            return oldest.peek();
+        }
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                        3.5 SORT STACK                                                //
+    //      Write a program to sort a stack such that the smallest items are on the top. You can use        //
+    //      an additional temporary stack, but you may not copy the elements into any other data structure  //
+    //      (such as an array). The stack supports the following operations: push, pop, peek, and isEmpty.  //
+    //                                                                                                      //
+    //      Time Complexity: O(N^2)                                                                         //
+    //      Space Complexity: O(N) using another stack that will be filled with N elements                  //
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Sorts input stack but popping a single element off, and checking that element against elements in another
+     * sorted stack. If the temp is smaller than an element in the sorted stack, that element is shifted out of the
+     * sorted stack and into the input stack. This process repeats until the temp data can be pushed into the sorted stack
+     * There is no need to push the shifted elements back onto the sorted stack because they will each be processed as the temp
+     * element.
+     *
+     * After the input stack is empty, the sorted stack has all our elements in the reverse order we need. Simply push them back onto
+     * the input stack to reverse the order.
+     */
+    public void sort(Stack<Integer> stack) {
+        Stack<Integer> sortedStack = new Stack<>();
+
+        // Process off the top one at a time
+        while (!stack.isEmpty()) {
+            int temp = stack.pop();
+
+            // shift out larger elements from sorted, then push data into correct spot
+            while (!sortedStack.isEmpty() && temp <= sortedStack.peek()) {
+                stack.push(sortedStack.pop());
+            }
+            sortedStack.push(temp);
+        }
+
+        // Sorted Stack has all elements ordered smallest at bottom, largest at top
+        while (!sortedStack.isEmpty()) {
+            stack.push(sortedStack.pop());
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                        3.6 ANIMAL SHELTER                                            //
+    //      An animal shelter, which holds only dogs and cats, operates on a strictly "first in, first out" //
+    //      basis. People must adopt either the "oldest" (based on arrival time) of all animals at the      //
+    //      shelter, or they can select whether they would prefer a dog or a cat (and will receive the      //
+    //      oldest animal of that type). They cannot select which specific animal they would like. Create   //
+    //      the data structures to maintain this system and implement operations such as enqueue,           //
+    //      dequeueAny, dequeueDog, and dequeueCat. You may use the built-in Linked list data structure.    //
+    //                                                                                                      //
+    //      Time Complexity: O(?)                                                                           //
+    //      Space Complexity: O(?)                                                                          //
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    class MyAnimalShelter {
+
+        LinkedList<MyAnimal> dogList;
+        LinkedList<MyAnimal> catList;
+        LinkedList<MyAnimal> order;
+
+        public MyAnimalShelter() {
+            dogList = new LinkedList<MyAnimal>();
+            catList = new LinkedList<MyAnimal>();
+            order = new LinkedList<MyAnimal>();
+        }
+
+        public boolean isEmpty() {
+            return order.isEmpty();
+        }
+
+        public void enqueue(MyAnimal a) {
+            order.add(a);
+            if (a == MyAnimal.DOG) {
+                dogList.add(a);
+            } else {
+                catList.add(a);
+            }
+        }
+
+        public MyAnimal dequeueAny() {
+            MyAnimal a = order.removeFirst();
+            if (a == MyAnimal.DOG) {
+                dogList.removeFirst();
+            } else {
+                catList.removeFirst();
+            }
+            return a;
+        }
+
+        public MyAnimal dequeueRandom() {
+            Random rand = new Random();
+            if (rand.nextInt(2) == 0) {
+                return dequeueDog();
+            } else {
+                return dequeueCat();
+            }
+        }
+
+        public MyAnimal dequeueDog() {
+            MyAnimal dog = dogList.removeFirst();
+            order.remove(dog);
+            return dog;
+        }
+
+        public MyAnimal dequeueCat() {
+            MyAnimal cat = catList.removeFirst();
+            order.remove(cat);
+            return cat;
+        }
+    }
+
+    abstract class Animal {
+        private Date admitted;
+        protected String name;
+        public Animal(String name) {
+            this.name = name;
+            admitted = new Date();
+        }
+        boolean isOlderThan(Animal a) {
+            return admitted.getTime() <= a.admitted.getTime(); // Older will have a smaller time milliseconds since Jan 1st 1970
+        }
+    }
+
+    class Dog extends Animal {
+        public Dog(String name) {
+            super(name);
+        }
+    }
+
+    class Cat extends Animal {
+        public Cat(String name) {
+            super(name);
+        }
+    }
+
+
+    class AnimalQueueCTCI {
+        LinkedList<Dog> dogList;
+        LinkedList<Cat> catList;
+
+        public AnimalQueueCTCI() {
+            dogList = new LinkedList<Dog>();
+            catList = new LinkedList<Cat>();
+        }
+
+        public boolean isEmpty() {
+            return dogList.isEmpty() && catList.isEmpty();
+        }
+
+        public void enqueue(Animal a) {
+            if (a instanceof StacksAndQueues.Dog) dogList.addLast((StacksAndQueues.Dog) a);
+            else if (a instanceof StacksAndQueues.Cat) catList.addLast((StacksAndQueues.Cat) a);
+        }
+
+        public Animal dequeueAny() {
+            if (dogList.isEmpty() && !catList.isEmpty()) {
+                return dequeueCat();
+            } else if (catList.isEmpty() && !dogList.isEmpty()) {
+                return dequeueDog();
+            } else {
+                return dogList.peekFirst().isOlderThan(catList.peekFirst()) ? dequeueDog() : dequeueCat();
+            }
+        }
+
+        public Dog dequeueDog() {
+            return dogList.removeFirst();
+        }
+
+        public Cat dequeueCat() {
+            return catList.removeFirst();
+        }
+    }
+
     public static void main(String[] args) throws Exception {
         StacksAndQueues sq = new StacksAndQueues();
         System.out.println("3.1: Describe how you could use a single array to implement three stacks.\n");
@@ -350,5 +561,26 @@ public class StacksAndQueues {
             System.out.print(setOfStacks.pop() + " ");
         }
         System.out.println();
+        System.out.println("3.4: Implement a MyQueue class which implements a queue using two stacks.\n");
+
+        System.out.println();
+        System.out.println("3.5: Write a program to sort a stack such that the smallest items are on the top. You can use" +
+        "an additional temporary stack, but you may not copy the elements into any other data structure" +
+        "(such as an array). The stack supports the following operations: push, pop, peek, and isEmpty.");
+
+        System.out.println();
+        System.out.println("3.6: An animal shelter, which holds only dogs and cats, operates on a strictly 'first in, first out'\n" +
+        "basis. People must adopt either the 'oldest' (based on arrival time) of all animals at the\n" +
+        "shelter, or they can select whether they would prefer a dog or a cat (and will receive the\n" +
+        "oldest animal of that type). They cannot select which specific animal they would like. Create\n" +
+        "the data structures to maintain this system and implement operations such as enqueue,\n" +
+        "dequeueAny, dequeueDog, and dequeueCat. You may use the built-in Linked list data structure.\n");
+
+        AnimalShelter aShelter = sq.new AnimalShelter();
+        aShelter.enqueue(Animal.DOG);aShelter.enqueue(Animal.DOG);aShelter.enqueue(Animal.CAT);aShelter.enqueue(Animal.DOG);aShelter.enqueue(Animal.CAT);
+        System.out.println(aShelter.dequeueCat());
+        while (!aShelter.isEmpty()) {
+            System.out.println(aShelter.dequeueAny());
+        }
     }
 }
